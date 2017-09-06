@@ -1,0 +1,44 @@
+>>>>>>>>>>>>To turn off autoindent when you paste code, there's a special "paste" mode.
+Type
+    :set paste
+Then paste your code. Note that the text in the tooltip now says -- INSERT (paste) --.
+After you pasted your code, turn off the paste-mode, so that auto-indenting when you type works correctly again.
+    :set nopaste
+
+Or, Vim offers the 'pastetoggle' option to conveniently turn 'paste' on and off with one keypress.
+Put the following in your vimrc (change <F2> to whatever key you want):
+    set pastetoggle=<F2>
+
+>>>>>>>>>>>>>
+Ref http://stackoverflow.com/questions/235839/indent-multiple-lines-quickly-in-vi 
+This answer summarises the other answers and comments of this question, and adds extra information based on the Vim documentation and the Vim wiki. For conciseness, this answer doesn't distinguish between Vi and Vim-specific commands.
+
+In the commands below, "re-indent" means "indent lines according to your indentation settings." shiftwidth is the primary variable that controls indentation.
+General Commands
+
+    >>   Indent line by shiftwidth spaces
+    <<   De-indent line by shiftwidth spaces
+    5>>  Indent 5 lines
+    5==  Re-indent 5 lines
+    >%   Increase indent of a braced or bracketed block (place cursor on brace first)
+    =%   Reindent a braced or bracketed block (cursor on brace)
+    <%   Decrease indent of a braced or bracketed block (cursor on brace)
+    ]p   Paste text, aligning indentation with surroundings
+    =i{  Re-indent the 'inner block', i.e. the contents of the block
+    =a{  Re-indent 'a block', i.e. block and containing braces
+    =2a{ Re-indent '2 blocks', i.e. this block and containing block
+    >i{  Increase inner block indent
+    <i{  Decrease inner block indent
+
+You can replace { with } or B, e.g. =iB is a valid block indent command. Take a look at "Indent a Code Block" for a nice example to try these commands out on.
+
+Also, remember that
+    .    Repeat last command
+    , so indentation commands can be easily and conveniently repeated.
+
+>>>>>> go back and forward between two or more lines
+	1. g; and g,, it is go to position previous/next change
+	2. Ctrl+O and Ctrl+I
+	3. ma mb mc md then 'a 'b 'c
+
+

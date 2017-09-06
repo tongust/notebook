@@ -1,0 +1,6 @@
+\contentsline {section}{\numberline {1}python max function using key and lambda expression}{1}
+\contentsline {section}{\numberline {2}List indices must be integers, not list}{2}
+\contentsline {section}{\numberline {3}numpy exchange between 1d array and 2d array}{2}
+\contentsline {section}{\numberline {4}IPython with Pyspark}{3}
+\contentsline {section}{List of Listings}{3}
+\contentsline {section}{List of Listings}{3}

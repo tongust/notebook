@@ -1,0 +1,36 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/tongust/Desktop/notebook/cmake/stdCmake/B.h
+iostream
+-
+
+/home/tongust/Desktop/notebook/cmake/stdCmake/main.cpp
+iostream
+-
+A.h
+/home/tongust/Desktop/notebook/cmake/stdCmake/A.h
+B.h
+/home/tongust/Desktop/notebook/cmake/stdCmake/B.h
+
+/home/tongust/Desktop/notebook/cmake/stdCmake/src/A.cpp
+A.h
+/home/tongust/Desktop/notebook/cmake/stdCmake/src/A.h
+B.h
+/home/tongust/Desktop/notebook/cmake/stdCmake/src/B.h
+
+B.h
+iostream
+-
+
+include/A.h
+iostream
+-
+B.h
+include/B.h
+

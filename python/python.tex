@@ -1,0 +1,121 @@
+\documentclass[a4paper, 12pt]{article}
+\usepackage[usenames, dvipsnames]{color}%% textcolor
+\usepackage{listings}%% Listing code
+\usepackage{color}	%color code
+%	define the code style
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+ 
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+\lstset{style=mystyle}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%% END OF HEAD FILE %%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\title{Python Note}
+
+\author{tonguste@gmail.com}
+\renewcommand*\contentsname{Summary}
+\begin{document}
+    \maketitle
+	\tableofcontents
+    %%%%%%%%%%%%%%%%%% SECTION  %%%%%%%%%%%%%%%%%%%%%%%%%%%
+    \section{python max function using key and lambda expression}
+	By default in Python 2 key compares items based on a set of rules based on the type of the objects(for example a string is always greater than an integer).
+	To modify the object before comparison or to compare based on a particular attribute/index you've to use the key argument.\\
+	\textbf{Example 1:}
+	
+	\begin{lstlisting}	[language=Python, caption=lambda and max key]
+		>>>lis = [1,2,3,'4','5','14']
+		>>>max(lis)
+		WRONG!!!
+		>>>max(lis, key=lambda x: int(x))
+		# change the value to be order into interge
+		>>>lis = [(1,'w'),(2,'r'),(4,'g')]
+		>>>max(lis, key = lambda x:x[1])
+
+	\end{lstlisting}
+
+    \section{List indices must be integers, not list}
+    List in Python must be integers, such as 
+    \begin{lstlisting} [language=Python]
+        a = [1,2,3,4]
+        a[1]    #will return 2
+        a[[1,0]] # it wont echo 2 1 as expected.
+        # via numpy
+        import numpy as np
+        a = np.array(a)
+        a[[1,0]] # Will return 2,1
+    \end{lstlisting}
+    However, array in \textbf{numpy} can be indiced by a list.
+
+    \section{numpy exchange between 1d array and 2d array}
+    Sclicing the $i^{th}$ column in numpy is totally different with MatLab.
+    \begin{lstlisting} [language=Python]
+        import numpy as np
+        c = np.arange(16).reshape((4,4))
+		#  [[ 0,  1,  2,  3],
+	    #   [ 4,  5,  6,  7],
+    	#   [ 8,  9, 10, 11],
+      	#   [12, 13, 14, 15]]
+		# if you want extract the 1 column, namely, [[1],[5],[9], [13]], you cannot use c[:, 1] or c[:][1] which doesn't return a vector
+		c[:, 1]
+		# array([1,  5,  9, 13])
+		c[:]
+		# array([4, 5, 6, 7]), surprisely!
+		# If you want change the some some column of c, you can do as:
+		c[:,1] = np.zeros((4,1))
+		# Oops...
+		# Traceback (most recent call last):
+	  	# File "<stdin>", line 1, in <module>
+		# TypeError: data type not understood
+		
+		c[:, 1] = np.zeros((4,1)).shape((1,4))
+		# Wrong again!!
+		np.zeros((4,1)).shape((4,1))
+		# array([[ 0.,  0.,  0.,  0.]]) A matrix NOT vector
+		# right way:
+		c[:, 1] = np.zeros((4,1)).shape(4)
+		# Okay, np.array.shape() (without tuple) will return a vector
+		#array([[ 0,  0,  2,  3],
+		#       [ 4,  0,  6,  7],
+		#       [ 8,  0, 10, 11],
+		#       [12,  0, 14, 15]])
+    \end{lstlisting}
+    %%%%%%% SECTION %%%%%%%
+    \section{IPython with Pyspark}
+    We can use IPYTHON when lanuching the Pyspark console.\\
+    \begin{lstlisting} [language=Perl]
+    $ipython=1 IPYTHON_OPTS="--pylab" $SPARK_HOME/bin/pyspark
+    \end{lstlisting}
+
+
+    %%%%%%%%%%%%%%%%% end of section %%%%%%%%%%%%%%%%%%%%%
+    
+    
+
+
+    %%%%%%%%%%%%%%%%%% End of doc %%%%%%%%%%%%%%%%%%%%%%%%%
+
+	\addcontentsline{toc}{section}{List of Listings}
+	\section*{List of Listings}
+	\addcontentsline{toc}{section}{List of Listings}
+\end{document}

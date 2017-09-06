@@ -1,0 +1,199 @@
+\documentclass[a4paper, 12pt]{article}
+\usepackage{hyperref}
+\usepackage[usenames, dvipsnames]{color}%% textcolor
+\usepackage{listings}%% Listing code
+\usepackage{color}	%color code
+\usepackage{enumitem}
+%	define the code style
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+ 
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+\lstset{style=mystyle}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%% END OF HEAD FILE %%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\title{CC compiler command}
+
+\author{Tongust}
+\renewcommand*\contentsname{Summary}
+\begin{document}
+    \maketitle
+    \tableofcontents
+    %%%%%%%%%%%%%%%%%% SECTION  %%%%%%%%%%%%%%%%%%%%%%%%%%%
+    \section{The environment variables for GCC/G++}
+    Each variable’s value is a list of directories separated by a special character, much like PATH, in which to look for header files. The special character, PATH\_SEPARATOR, is target-dependent and determined at GCC build time. For Microsoft Windows-based targets it is a semicolon, and for almost all other targets it is a colon.
+    \subsection{Search xx.h file}
+    \textbf{CPATH} specifies a list of directories to be searched as if specified with $-I$. This environment variable is used regardless of which language is being preprocessed. Other characters used as ENV: \textbf{C\_INCLUDE\_PATH CPLUS\_INCLUDE\_PATH}.\\
+    Keep in maind: pls use the \textbf{-I} instead of modifing the ENV of \textbf{CPATH}.\\
+    For example, we have 4 ways to modify this \textbf{CPATH}.\\
+    \begin{itemize}
+        \item Set ENV \textbf{only} for current shell:\\
+            \textsf{CPATH=/your/include/path/:\$CPATH}\\
+        \item Set ENV for current shell and \textbf{all processes} started from current shell:\\
+            \textsf{export CPATH=/your/include/path/:\$CPATH}
+        \item Set ENV \textbf{permanently} for all future bash sessions:\\
+            \textsf{export CPATH=/your/include/path/:\$CPATH $\gg /home/your/.bashrc$}
+        \item Set ENV permanently and \textbf{system wide}(all users and processes), just add to the /etc/environment:\\
+            \textsf{\# gksudo gedit /etc/environment}
+    \end{itemize}
+    You can check the default CPATH with cmd: cpp -v \\
+    \begin{verbatim}
+    #include "..." search starts here:
+    #include <...> search starts here:
+    /usr/lib/gcc/x86_64-linux-gnu/5/include
+    /usr/local/include
+    /usr/lib/gcc/x86_64-linux-gnu/5/include-fixed
+    /usr/include/x86_64-linux-gnu
+    /usr/include
+    End of search list.
+    \end{verbatim}
+
+    Ref: \href{https://gcc.gnu.org/onlinedocs/cpp/Environment-Variables.html}{gnu.org}
+    \subsection{\emph{-iquote} Compiler Flag}
+    GCC actually does allow you to modify this search path as well, with the -iquote compiler flag.\\
+    \begin{verbatim} 
+$ cpp -iquote hdr1 -v
+...
+#include "..." search starts here:
+ hdr1
+#include <...> search starts here:
+ /usr/local/include
+ /usr/lib/gcc/x86_64-linux-gnu/4.4.5/include
+ /usr/lib/gcc/x86_64-linux-gnu/4.4.5/include-fixed
+ /usr/include/x86_64-linux-gnu
+ /usr/include
+    \end{verbatim}
+    \subsection{Understanding the "extern" keyword in C}
+    \textsf{extern} is used for variable and function to just declare them. \\
+    As for function: the synatex \textsf{"int foo(int a);"} is treated as by the compiler as \textsf{"extern int foo(int a);"} However the situation is different with 
+    variable. You must explicitly prepend the variable with "extern": \textsf{extern int var;}. And the \textsf{int var;} means that the var has been declared 
+    as well as defined.\\
+    Using the variable that is only declared is undefined. 
+    \begin{verbatim}
+    #include <iostrem>
+    extern int var;
+    /* Error */
+    int main() {
+        var = 10;
+        return 0;
+    }
+    /* Success */
+    int var  = 0; // Only define once.
+    int main() {
+        var = 10;
+        return 0;
+    }
+
+    \end{verbatim}
+    \subsection{Shared libraries with GCC on Linux} 
+    \begin{itemize} 
+        \item Step 1: Compiling with Position Independent Code\\
+            We need to compile our library source code into position-independent code (PIC)\\
+            \textsf{\$ gcc -c -Wall -Werror -fpic foo.c}
+        \item Step 2: Creating a shared library from an object file\\
+            Now we need to actually turn this object file into a shared library. We’ll call it libfoo.so:\\
+            \textsf{gcc -shared -o libfoo.so foo.o}
+        \item Step 3: Linking with a shared library\\
+            As you can see, that was actually pretty easy. We have a shared library. 
+            Let’s compile our main.c and link it with libfoo. We’ll call our final program “test.” 
+            Note that the -lfoo option is not looking for foo.o, but libfoo.so. 
+            GCC assumes that all libraries start with ‘lib’ and end with .so or .a 
+            (\textbf{.so is for shared object or shared libraries, and .a is for archive, or statically linked libraries}).\\
+            \textbf{Telling GCC where to find the shared library}\\
+            \textsf{\$ gcc -L/home/username/foo -Wall -o test main.c -lfoo};\\
+        \item Step 4: Making the library available at runtime\\
+            Good, no errors. Now let’s run our program:\\
+            \textsf{\$ ./test ./test: error while loading shared libraries: libfoo.so: cannot open shared object file: No such file or directory.}\\
+            Oh no! The loader can’t find the shared library.3 We didn’t install it in a standard location, so we need to give the loader a little help. We have a couple of options: we can use the environment variable LD\_LIBRARY\_PATH for this, or rpath. Let’s take a look first at LD\_LIBRARY\_PATH:
+        \item \textbf{Using LD\_LIBRARY\_PATH}\\
+            \$ LD\_LIBRARY\_PATH=/home/username/foo:\$LD\_LIBRARY\_PATH\\
+            \textsf{\$ ./test
+            ./test: error while loading shared libraries: libfoo.so: cannot open shared object file: No such file or directory}\\
+            What happened? Our directory is in LD\_LIBRARY\_PATH, but we didn’t export it. In Linux, if you don’t export the changes to an environment variable, they won’t be inherited by the child processes. The loader and our test program didn’t inherit the changes we made. Thankfully, the fix is easy:\\
+            \textsf{
+                \$ export LD\_LIBRARY\_PATH=/home/username/foo:\$LD\_LIBRARY\_PATH
+                \$ ./test
+            }
+        \item \textbf{Using rpath}\\
+            Now let’s try rpath (first we’ll clear LD\_LIBRARY\_PATH to ensure it’s rpath that’s finding our library). Rpath, or the run path, is a way of embedding the location of shared libraries in the executable itself, instead of relying on default locations or environment variables. We do this during the linking stage. Notice the lengthy “-Wl,-rpath=/home/username/foo” option. The -Wl portion sends comma-separated options to the linker, so we tell it to send the -rpath option to the
+            linker with our working directory.\\
+            \begin{verbatim}
+            $ unset LD_LIBRARY_PATH
+            $ gcc -L/home/username/foo -Wl,-rpath=/home/username/foo -Wall 
+                                                    -o test main.c -lfoo
+            $ ./test
+            This is a shared library test...
+            Hello, I'm a shared library
+            ------
+            Excellent, it worked. The rpath method is
+            great because each program gets to list its 
+            shared library locations independently, 
+            so there are no issues with different 
+            programs looking in the wrong paths like 
+            there were for LD_LIBRARY_PATH.
+            \end{verbatim}
+        \item \textbf{Using ldconfig to modify ld.so}
+            What if we want to install our library so everybody on the system can use it? For that, you will need admin privileges. You will need this for two reasons: first, to put the library in a standard location, probably /usr/lib or /usr/local/lib, which normal users don’t have write access to. Second, you will need to modify the ld.so config file and cache. As root, do the following:\\
+            \textsf{
+                \$ cp /home/username/foo/libfoo.so /usr/lib
+                \$ chmod 0755 /usr/lib/libfoo.so
+            }\\
+            Now the file is in a standard location, with correct permissions, readable by everybody. We need to tell the loader it’s available for use, so let’s update the cache:\\
+            \textsf{\$ ldconfig}
+            That should create a link to our shared library and update the cache so it’s available for immediate use. Let’s double check:\\
+            \textsf{\$ ldconfig -p | grep foo
+            libfoo.so (libc6) => /usr/lib/libfoo.so}
+        \item Node\\
+            1. What is position independent code? PIC is code that works no matter where in memory it is placed. Because several different programs can all use one instance of your shared library, the library cannot store things at fixed addresses, since the location of that library in memory will vary from program to program.\\
+            2. GCC first searches for libraries in /usr/local/lib, then in /usr/lib. Following that, it searches for libraries in the directories specified by the -L parameter, in the order specified on the command line.\\
+            \textsf{
+            3. The default GNU loader, ld.so, looks for libraries in the following order:\\
+            3.1 It looks in the DT\_RPATH section of the executable, unless there is a DT\_RUNPATH section.\\
+            3.2 It looks in LD\_LIBRARY\_PATH. This is skipped if the executable is setuid/setgid for security reasons.\\
+            3.3 It looks in the DT\_RUNPATH section of the executable unless the setuid/setgid bits are set (for security reasons).\\
+            3.4 It looks in the cache file /etc/ld/so/cache (disabled with the ‘-z nodeflib’ linker option).\\
+            3.5 It looks in the default directories /lib then /usr/lib (disabled with the ‘-z nodeflib’ linker option).}\\
+
+    \end{itemize}
+    \subsection{Flags for GCC} 
+    \textbf{-I}: Include header files xx.h directive\\
+    \textbf{-L}: Library directive (1. shared library/objective .so; 2. archive file .a).\\
+    \textbf{-l}: Link the library file (-lmylib). The compiler will search the libmylib.so under the path indicated by -I.
+    \subsection{Create, View, Extract and Modify C Archive Files (*.a)}
+    \textsf{ar} is an archive tool used to combine objects to create an archive file with .a extension, also known as library.\\
+    1. Compile the Programs and Get Object Codes. Use -c option to compile both the c program. Using option -c will create the corresponding .o files.\\
+    2. Create the C Program Static Library using ar utility. Now create the static library “libarith.a” with the addition object file and multiplication object file as follows\\
+    \textsf{\$ ar cr libmylib.a one.o two.o}\\
+    3. Write C program to Use the Library libmylib.a. You just declear it and use its defination from \textsf{libmylib.a} without include it.\\
+    4. Complier it.\\
+    Option 1: \$ gcc -Wall example.c -L/your/lib/pathname/ -lmylib -o example\\
+    Option 2: \$ gcc -Wall example.c /pathname/libarith.a -o example. Just explicitly put together the pathname in which the *.a files exist;
+
+
+
+    %%%%%%%%%%%%%%%%%% End of doc %%%%%%%%%%%%%%%%%%%%%%%%%
+    \addcontentsline{toc}{section}{List of Listings}
+    \section*{List of Listings}
+    \addcontentsline{toc}{section}{List of Listings}
+\end{document}
+

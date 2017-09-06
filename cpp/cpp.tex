@@ -1,0 +1,182 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage{listings}
+\usepackage{color}
+\definecolor{mygray}{rgb}{0.4,0.4,0.4}
+\lstset{language=C++,
+                basicstyle=\ttfamily,
+                keywordstyle=\color{blue}\ttfamily,
+                stringstyle=\color{red}\ttfamily,
+                numbers=left,
+                stepnumber=1,
+                commentstyle=\color{mygray}\ttfamily,
+                morecomment=[l][\color{magenta}]{\#}
+}
+\usepackage[most]{tcolorbox}
+
+\tcbset{
+    frame code={}
+    center title,
+    left=0pt,
+    right=0pt,
+    top=0pt,
+    bottom=0pt,
+    colback=gray!70,
+    colframe=white,
+    width=\dimexpr\textwidth\relax,
+    enlarge left by=0mm,
+    boxsep=5pt,
+    arc=0pt,outer arc=0pt,
+}
+
+\title{ Tips in \emph{\bf C++} }
+\author{Tongust}
+\date{\today}
+
+\begin{document}
+  \maketitle
+  \section{Static Member}
+   Static member of class should be defined outside the class body, 
+  it's prohibitted that both of the decleartion and definitions happened in the class body.
+  Usually, the \emph{static} is defined in the class x.cpp file. Such as: const int mclass::statmem = 10;
+  \section{\#ifundef \#undef Directive}
+  The \#undef directive undefines a constant or preprocessor macro defined previously using \#define.
+  For exemple
+
+ \#define E 2.718
+
+  int e\_sq = E * E;
+
+  \#undef E
+
+  int E = 1.0;E wiil not be substitued by macro
+  \section{strcmp vs strncmp vs memcmp}
+  \begin{verbatim}
+  strcmp    compares null-terminated C strings
+  strncmp   compares at most N characters of null-terminated C strings
+  memcmp    compares binary byte buffers of N bytes
+  So if you have these strings:
+    const char s1[] = "12345\0\0\0\0"; // extra null bytes at end
+    const char s2[] = "12345\0abc"; // embdded null byte
+    const char s3[] = "123456789"; 
+  Then these results holds true:
+    strcmp(s1,s2) == 0;
+    strncmp(s1,s3,5) == 0;
+    strncmp(s1,s2,5) == 0; 
+    strncmp(s1,s2,8) == 0;// string s1 and s2 are the 
+                            same up through the null terminator
+    memcmp(s1,s2,8) != 0;
+  \end{verbatim}
+  %%%%%%%%%%%%%%%%%%
+  \section{dynamic memory and pointer}
+  \begin{verbatim}
+  1. apply new memory (sigle):
+  int *ip = new int(12);
+  delete ip;
+  2. apply new memory (1D array)
+  int *iap = new int[4];
+  delete []iap;
+  3. apply new memory (2D array)
+  int N = 100, M = 100;
+  int **iapp = new int[N][M];
+  We need two steps
+  a)
+  for (int i = 0; i != N; ++i)
+    delete []iapp[i];
+  or:
+  int **e = iapp+N;
+  for (int **t = iapp; t != e; ++t)
+    delete []*t;
+  b)
+  delete []iapp;
+  4. apply 2+ order pointer, i.e., a pointer to a pointer that point a new int
+  4.1 the 2 order pointer points a static pointer
+  int **ipp = new int*(nullptr);
+  int d = 0;
+  *ipp = &d;
+  delete ipp;
+  4.2 the second order pointer points to a dynamic pointer
+  4.2.1
+  int **ipp = new int*(new int (12) );
+  delete *ipp;
+  delete ipp;
+  4.2.2
+  int **ipp = new int *(new int (12));
+  int *ip = new int(13);
+  delete *ipp;
+  *ipp = ip;
+  // NOT ipp = &ip; or *ipp = &ip;
+  delete ip;
+  delete ipp;
+  \end{verbatim}
+    \section{non-Virtual Constructor and Virtual Desconstructor}
+    \subsection{Why dont we have virtual Constructor?}
+    \textsf{ref: http://www.stroustrup.com/bs\_faq2.html\#virtual-ctor}\\
+    A virtual call is a mechanism to get work done given partial information. In particular, "virtual" allows us to call a function knowing only an interfaces and not the exact type of the object. To create an object you need complete information. In particular, you need to know the exact type of what you want to create. Consequently, a "call to a constructor" cannot be virtual.
+    \subsection{Virtual Desconstructor} 
+    A base class generally should define a virtual destructor. When we \textit{delete} a pointer to a dynamically allocated object, it may occur that the static type of the pointer differs from the dynamic one of the object being destroyed. \textbf{Executing \textit{delete} on a pointer to base that points to a derived object
+    has undefine behavior if the base's destructor is not virtual.}
+    \begin{tcolorbox}
+    \begin{lstlisting} 
+        class B {/* Base class */
+        public: 
+        /* Need to be virtual.
+         * dynamic binding for the
+         * destructor when we delete the pointer.
+         */
+        virtual ~B() = default;
+        }
+    \end{lstlisting}
+    \end{tcolorbox}
+    \section{Memory fragmentation} 
+    \textbf{Memory Fragmentation: }The classic symptom of memory fragmentation is that you try to allocate a large block and you can't, even though you appear to have enough memory free.\\
+    Memory pool is used for solving Memory fragmentation problem. Pool allocation is a memory allocation scheme that is very fast, but limited in its usage. For more information on pool allocation (also called simple segregated storage, see concepts concepts and Simple Segregated Storage). Memory pools are basically just memory you've allocated in advance (and typically in big blocks). 
+    \subsection{\textsf{Placement new}}
+    There are many uses of placement new. The simplest use is to place an object at a particular location in memory. This is done by supplying the place as a pointer parameter to the new part of a new expression:\\
+    \begin{lstlisting}
+	#include <new>        // Must #include this to use "placement new"
+	#include "Fred.h"     // Declaration of class Fred
+	void someCode()
+	{
+	  char memory[sizeof(Fred)];     // Line #1
+	  void* place = memory;          // Line #2
+	  Fred* f = new(place) Fred();   // Line #3 (see "DANGER" below)
+	  // The pointers f and place will be equal
+	  // ...
+      // destroy
+	  char memory[sizeof(Fred)];
+	  void* p = memory;
+	  Fred* f = new(p) Fred();
+	  // ...
+	  f->~Fred();   // Explicitly call the destructor for the placed object
+	}
+    \end{lstlisting}
+    DANGER: You are taking sole responsibility that the pointer you pass to the “placement new” operator points to a region of memory that is big enough and is properly aligned for the object type that you’re creating. Neither the compiler nor the run-time system make any attempt to check whether you did this right. If your Fred class needs to be aligned on a 4 byte boundary but you supplied a location that isn’t properly aligned, you can have a serious disaster on your hands.
+    \section{Global var and local var} 
+    \begin{lstlisting}
+    /*main.c*/
+    /*-------------------------*/
+    /* global variable */
+    #include <unistd.h>
+    #include <stdio.h>
+    char *glo_ppa[4];
+    char **glo_pp = glo_ppa;
+    int main() {
+        /* local variable */
+        char *loc_ppa[4];
+        printf("%d\n", glo_pp[4]);
+        /* 
+         * echo 0
+         */
+        printf("%d\n", loc_pp[4]);
+        /* 
+         * echo non-zero
+         */
+        exit(0);
+    }
+
+    \end{lstlisting}
+
+
+
+\end{document}
+

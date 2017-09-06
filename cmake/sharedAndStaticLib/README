@@ -1,0 +1,59 @@
+Ref: http://stackoverflow.com/questions/10882030/cmake-vs-make-sample-codes 
+The following Makefile builds an executable named prog from the sources prog1.c, prog2.c, prog3.c and main.c. prog is linked against libmystatlib.a and libmydynlib.so which are both also built from source. Additionally, prog uses the library libstuff.a in stuff/lib and its header in stuff/include. The Makefile by default builds a release target, but offers also a debug target:
+
+#Makefile    
+CC = gcc
+CPP = g++
+RANLIB = ar rcs
+RELEASE = -c -O3 
+DEBUG = -c -g -D_DEBUG
+INCDIR = -I./stuff/include
+LIBDIR = -L./stuff/lib -L.
+LIBS = -lstuff -lmystatlib -lmydynlib
+CFLAGS = $(RELEASE)
+
+PROGOBJS = prog1.o prog2.o prog3.o
+
+prog: main.o $(PROGOBJS) mystatlib mydynlib
+    $(CC) main.o $(PROGOBJS) $(LIBDIR) $(LIBS) -o prog 
+debug: CFLAGS=$(DEBUG)
+debug: prog
+
+mystatlib: mystatlib.o
+    $(RANLIB) libmystatlib.a mystatlib.o
+mydynlib: mydynlib.o
+    $(CPP) -shared mydynlib.o -o libmydynlib.so
+
+%.o: %.c
+    $(CC) $(CFLAGS) $(INCDIR) $< -o $@ 
+%.o: %.cpp
+    $(CPP) $(CFLAGS) $(INCDIR) -fPIC  $< -o $@ 
+Here is a CMakeLists.txtthat does (almost) exactly the same, with some comments to underline the similarities to the Makefile:
+
+#CMakeLists.txt     
+cmake_minimum_required(VERSION 2.8)                    # stuff not directly
+project(example)                                       # related to building
+
+include_directories(${CMAKE_SOURCE_DIR}/stuff/include) # -I flags for compiler
+link_directories(${CMAKE_SOURCE_DIR}/stuff/lib)        # -L flags for linker
+
+set(PROGSRC prog1.c prog2.c prog3.c)                   # define variable 
+
+add_executable(prog main.c ${PROGSRC})                 # define executable target prog, specify sources
+target_link_libraries(prog mystatlib mydynlib stuff)   # -l flags for linking prog target
+
+add_library(mystatlib STATIC mystatlib.c)              # define static library target mystatlib, specify sources
+
+add_library(mydynlib SHARED mydynlib.cpp)              # define shared library target mydynlib, specify sources
+#extra flags for linking mydynlib
+set_target_properties(mydynlib PROPERTIES POSITION_INDEPENDENT_CODE TRUE) 
+#alternatively:
+#set_target_properties(mydynlib PROPERTIES COMPILE_FLAGS "-fPIC")
+In this simple example, the most important differences are:
+
+CMake recognizes which compilers to use for which kind of source. Also, it invokes the right sequence of commands for each type of target. Therefore, there is no explicit specification of commands like $(CC)..., $(RANLIB)... and so on.
+All usual compiler/linker flags dealing with inclusion of header files, libraries, etc. are replaced by platform independent / build system independent commands.
+Debugging flags are included by either setting the variable CMAKE_BUILD_TYPE to "Debug", or by passing it to CMake when invoking the program: cmake -DCMAKE_BUILD_TYPE:STRING=Debug.
+CMake offers also the platform independent inclusion of the '-fPIC' flag (via the POSITION_INDEPENDENT_CODE property) and many others. Still, more obscure settings can be implemented by hand in CMake just as well as in a Makefile (by using COMPILE_FLAGS and similar properties). Of course CMake really starts to shine when third party libraries (like OpenGL) are included in a portable manner.
+The build process has one step if you use a Makefile, namely typing 
+make at the command line. For CMake, there are two steps: First, you need to setup your build environment (either by typing cmake <source_dir> in your build directory or by running some GUI client). This creates a Makefile or something equivalent, depending on the build system of your choice (e.g. make on Unixes or VC++ or MinGW + Msys on Windows). The build system can be passed to CMake as a parameter; however, CMake makes reasonable default choices depending on your system configuration. Second, you perform the actual build in the selected build system.

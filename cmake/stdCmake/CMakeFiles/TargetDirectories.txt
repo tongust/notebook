@@ -1,0 +1,3 @@
+/home/tongust/Desktop/notebook/cmake/stdCmake/CMakeFiles/edit_cache.dir
+/home/tongust/Desktop/notebook/cmake/stdCmake/CMakeFiles/rebuild_cache.dir
+/home/tongust/Desktop/notebook/cmake/stdCmake/CMakeFiles/BuildIndexBlockwise.dir

@@ -1,0 +1,104 @@
+\documentclass[a4paper, 12pt]{article}
+
+
+% Package
+\usepackage{amsmath} % Advanced math typesetting
+\usepackage{listings}%% Listing code
+\usepackage{hyperref} %% URL ref
+\usepackage{color}	%color code
+\usepackage{mathtools}
+\usepackage{amsmath}% blacksquare
+\usepackage{MnSymbol}%
+\usepackage{wasysym}%
+%	define the code style
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+% defining your macro for conversion to big Roman numbers
+\makeatletter
+\newcommand*{\rom}[1]{\expandafter\@slowromancap\romannumeral #1@}
+\makeatother
+% end of conversion to big Roman numbers
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+ 
+\lstset{style=mystyle}
+%% ref: https://www.sharelatex.com/learn/Code_listing 
+\title{Chapter \rom{7}}
+\author{tonguste@gmail.com}
+\renewcommand*\contentsname{Summary}
+\begin{document}
+    \maketitle
+	\tableofcontents
+    \section{Ex. 7.3 }
+
+%% math formula
+    Let $\hat{\textbf{f}}$ = \textbf{Sy} be a linear smoothing of \textbf{y}. 
+    \subparagraph{(a)} If $S_{ii}$ is the \textit{i}th diagonal element of \textbf{S}, showing that for \textbf{S} arising from least
+    squares projections and cubic smoothing splines, the cross-validated residual can be written by as
+    \begin{align}
+        y_i - \hat{f}^{-i}(x_i) = \frac{y_i-\hat{f}(x_i)}{1-S_{ii}}
+    \end{align}
+    \subparagraph{(b)} Use this result to show that $|y-\hat{f}^{-i}(x_i)| \geq |y_{i}-\hat{f}(x_i)|$.
+    \subparagraph{(c)} Find general conditions on any smoother \textbf{S} to make result (7.64) hold.
+
+    \paragraph{\textbf{Proof:}} \textbf{(a)} Denote $A = X^{T}X $; for the least square with the $i^{th}$ data points omitted: 
+    \begin{align}%1
+        \hat{f}^{-i}(x_i) = x_{i}^{T}((X^{-i})^TX^{-i})^{-1}(X^{-i})^Ty^{-i}
+    \end{align}
+    It is true that $X^TX = \Sigma_{j=1}^{j=n}x_ix^T_i$, and $(X^{-i})^TX^{-i} = X^TX - x_ix$. And it is obvious that $(X^{-i})^Ty^{-i} = 
+    X^Ty - x_iy_i$. Finally, (2) can be simplified as following:
+    \begin{align}%2
+        \hat{f}^{-i}(x_i) = x_{i}^{T}(A-x_ix_i^T)^{-1}(X^Ty-x_iy_i)
+    \end{align}
+    There exists a tricks when simplifing (3). In mathematics, the \emph{Sherman-Morrison formula} 
+    (see \url{ https://en.wikipedia.org/wiki/Sherman-Morrison\_formula})
+     computes the inverse of the sun of an invertible matrix $A$ and the outer product, $uv^T$:
+    \begin{align}%3
+        (A-x_ix_i^T)^{-1} = A^{-1} + \frac{A^{-1}x_ix_i^TA^{-1}}{1-x_i^TA^{-1}x_i}
+    \end{align}
+    Since $X^T \in \Re^{pn}$ equals to $[x_1,...,x_i,...,x_n]$, we can write $x^T_i$ as $\delta_i^TX$($\delta_i$ is a vector $\delta \in \Re^n$ where
+    all elements expect the $i^{th}$ component valued as 1 is zero, timely $\delta_i^T = [0,...,1^{i},...,0]$). We denote:
+    \begin{align}
+        x_i^TA^{-1}x_i &= \delta_i^TXA^{-1}X^T\delta_i\\
+        &= \delta_i^TS\delta_i\\
+        &= S_{ii}
+    \end{align}
+    where $S = X(X^TX)^{-1}X^T$.
+    To simplify (3), we substitute (4)~(7) into this equation and we get:
+    \begin{align}
+        \hat{f}^{-i}(x_i) &= x_i^T[A^{-1}+\frac{A^-1x_ix_i^TA^{-1}}{1-S_{ii}}]\\
+        &= x_i^TA^{-1}X^Ty - x_i^TA^{-1}x_iy_i+\frac{x_i^TA^{-1}x_i(x_i^TA^{-1}X^Ty) - (x_i^TA^{-1}x_i)^2y_i}{1-S_{ii}}\\
+        &= \hat{f}(x_i) - S_{ii}y_i + \frac{S_{ii}\hat{f}(x_i)-S_{ii}^2y_i}{1-S_{ii}}\\
+        &= \frac{\hat{f}(x_i)- y_iS_{ii} - \hat{f}(x_i)S_{ii} + y_iS^2_{ii}+\hat{f}(x_i)S_{ii}-y_iS^2_{ii}}{1-S_{ii}}\\
+        &= \frac{\hat{f}(x_i)-y_iS_{ii}}{1-S_{ii}}\\
+        &= \frac{\hat{f}(x_i) - y_i + y_i(1-S_{ii})}{1-S_{ii}}\\
+        &= y_i - \frac{y_i - \hat{f}(x_i)}{1-S_{ii}}
+    \end{align}
+    \hfill $\blacksquare$
+	\section*{List of Listings}
+
+	\emph{Adding the comma-separated parameter caption=Python example inside the brackets, enables the caption. This caption can be later used in the list of Listings.}
+
+	\lstlistoflistings
+
+\end{document}
