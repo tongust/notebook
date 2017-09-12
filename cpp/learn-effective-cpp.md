@@ -170,3 +170,44 @@ class S
         return *this;
 }
 ```
+## 12. copying
+- In ***member initialization list***, we can 
+        - copy-construct the base-part 
+        - and get the private member of rhs.
+- Never use the copy-constructor to help copy-assignment.
+
+```cpp
+class B
+{
+public:
+        B() = default;
+        void foo(const B& rhs);
+private:
+        int data;
+};
+void B::foo(const B& rhs)
+{
+        data = rhs.data; // Is valid!
+        return;
+}
+```
+```cpp
+class B: public A
+{
+public:
+        B(const B&b);
+        B& operator=(const B&b){}
+private:
+        int data;
+};
+B::B(const B&b): 
+        A(b),                   // 1. Important!
+        data(b.data){}
+B& B::operator=(const B&b) {
+        A::operator=(rhs);      // 2. important!
+        data = b.data;
+        return *this;
+}
+
+```
+
