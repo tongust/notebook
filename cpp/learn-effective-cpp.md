@@ -150,5 +150,23 @@ class S
 - 1. 该函数被调用期间
 - 2. 首次遇见该对象的定义式时，被初始化。
 
-# Never call virtual functions during construction and destruction
+# 2. Constructor, Destructor, Assignment Operator
+
+## 09. Never call virtual functions during construction and destruction
 - 在base class构造期间，virtual不是virtual函数。在base class构造期间，其调用的virtual function是base的，而不是derived的。
+- If the virtual one of derived class is called during construction of base, the unique members of derived class is used. However, the derived class construction is still pending!
+
+## 11. Handle Assignment to self in operator=
+
+- 自我复制安全性
+> if (this == &rhs) return \*this;
+- 异常安全性(exception safety)
+```cpp
+...
+{
+        Object* ptmp = pb;// pb: point to data
+        pb = new Object(*rhs.pb);
+        delete ptmp;
+        return *this;
+}
+```
