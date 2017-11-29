@@ -25,13 +25,11 @@ Then, you will find two file:
 - id\_rsa: private key
 - id\_rsa.pub: public key
 
-The append the content in id\_rsa.pub into the *authorized\_keys* file.
+Next, append the content in id\_rsa.pub into the *authorized\_keys* file.
 
 ### Push
-For the first time:
-- git push -u origin mater
-For the second time
-- git push
+- git push -u origin mater : For the first time
+- git push: For second time : For the second time
 
 ## Remote
 ### Creat git user
