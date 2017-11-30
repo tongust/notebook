@@ -9,7 +9,7 @@
 - Prefer placing the definitions for template and inline functions in the same file as their declarations.
 ## The #define Guard
 To guarantee uniqueness
-```{cpp}
+```cpp
 #ifndef FOO_BAR_BAZ_H_
 #define FOO_BAR_BAZ_H_
 // Code here
@@ -36,7 +36,7 @@ Within each section the includes should be ordered alphabetically.
 
 # Scope
 ## Namespaces
-```{cpp}
+```cpp
 /* In the .h file */
 
 namespace mynamespace {
@@ -51,11 +51,11 @@ namespace mynamespace {
 ```
 - Do not declare anything in namespaces *std*, becourse declaring entities in namespae *std* is undefined behavior.
 - May not use a *using-directive* to make all names from a namespace available.
-```{cpp}
+```cpp
 using namespace std; /* Should be forbidden */
 ```
 - Do not use *Namespace aliases* at namespace scope in header files except in explicitly marked interal-only namespaces.
-```{cpp}
+```cpp
 // Shorten access to some commonly used names in .cc files.
 namespace baz = ::foo::bar::baz;
 ```
@@ -63,7 +63,7 @@ namespace baz = ::foo::bar::baz;
 
 ## Unnamed Namespaces and Static Variables
 When definitions in a *.cc* file do not need to be referenced outside that file, place them in an unnamed namespace or declare them **static**. Don not use either of construts in *.h* files.
-```{cpp}
+```cpp
 /* unnameed namespace */
 namespace {
         Var used_only_inernal;
