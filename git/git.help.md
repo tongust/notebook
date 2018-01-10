@@ -52,5 +52,7 @@ git:x:1001:1001:,,,:/home/git:/bin/bash
 ## Init a project
 Create a git in remote server.
 >cd /srv/
+
 >sudo git init --bare sample.git
+
 >sudo chown -R git:git sample.git
