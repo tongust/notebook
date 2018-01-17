@@ -25,19 +25,19 @@ install apt-cyg /bin
 ```
 Until now, you can use it as *apt-get* in Ubuntu!
 ```shell
-apt-cyg wget
-apt-cyg curl
-apt-cyg rlwrap
-apt-cyg tar
-apt-cyg gcc-core
-apt-cyg libpng15
-apt-cyg libpng-devel
-apt-cyg openssh
-apt-cyg xorg-server
-apt-cyg xinit
-apt-cyg xorg-docs
-apt-cyg xterm
-apt-cyg make
-apt-cyg gdb
-apt-cyg vim
+apt-cyg install wget
+apt-cyg install curl
+apt-cyg install rlwrap
+apt-cyg install tar
+apt-cyg install gcc-core
+apt-cyg install libpng15
+apt-cyg install libpng-devel
+apt-cyg install openssh
+apt-cyg install xorg-server
+apt-cyg install xinit
+apt-cyg install xorg-docs
+apt-cyg install xterm
+apt-cyg install make
+apt-cyg install gdb
+apt-cyg install vim
 ```

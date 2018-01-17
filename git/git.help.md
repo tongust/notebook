@@ -56,3 +56,5 @@ Create a git in remote server.
 >sudo git init --bare sample.git
 
 >sudo chown -R git:git sample.git
+
+# Keeping a fork up to date
