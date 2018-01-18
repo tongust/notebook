@@ -58,3 +58,50 @@ Create a git in remote server.
 >sudo chown -R git:git sample.git
 
 # Keeping a fork up to date
+## 1. Clone your fork:
+
+>    git clone git@github.com:YOUR-USERNAME/YOUR-FORKED-REPO.git
+
+
+
+## 2. Add remote from original repository in your forked repository: 
+
+>    cd into/cloned/fork-repo
+>    git remote add upstream git@github.com:lennylxx/ipv6-hosts.git
+>    git fetch upstream
+
+
+## 3. Updating your fork from original repo to keep up with their changes:
+
+>    git pull upstream master
+
+
+# ['Merge' specific files from Git branches](https://stackoverflow.com/questions/18115411/how-to-merge-specific-files-from-git-branches)
+```
+$ git branch
+master
+*branch1
+branch2
+```
+Aussming you want to merge *file.cpp* in branch2 to *file.cpp* in branch1 (in current branch).
+```
+#$git checkout branch1
+$ git checkout --patch branch2 file.cpp
+```
+To have full control do an interactive merge using *--patch* switch:
+```
+y - stage this hunk
+n - do not stage this hunk
+q - quit; do not stage this hunk nor any of the remaining ones
+a - stage this hunk and all later hunks in the file
+d - do not stage this hunk nor any of the later hunks in the file
+g - select a hunk to go to
+/ - search for a hunk matching the given regex
+j - leave this hunk undecided, see next undecided hunk
+J - leave this hunk undecided, see next hunk
+k - leave this hunk undecided, see previous undecided hunk
+K - leave this hunk undecided, see previous hunk
+s - split the current hunk into smaller hunks
+e - manually edit the current hunk
+? - print help
+```
