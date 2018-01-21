@@ -56,3 +56,14 @@ Create a git in remote server.
 >sudo git init --bare sample.git
 
 >sudo chown -R git:git sample.git
+
+# [Show changes as Git Gui](https://stackoverflow.com/questions/1587846/how-do-i-show-the-changes-which-have-been-staged)
+![A simple graphic](./figures/graphic-git-diff.png)
+## git diff
+Shows the changes between the working directory and the index. This shows what has been changed, but is not staged for a commit.
+
+## git diff --cached
+Shows the changes between the index and the *HEAD* (which is the last commit on this branch). This shows what has been added to the index and staged for a commit.
+
+## git diff *HEAD*
+Shows all the changes between the working directory and *HEAD* (which includes changes in the index). This shows all the changes since the last commit, whether or not they have been staged for commit or not.
