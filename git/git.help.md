@@ -1,3 +1,19 @@
+# Create Branch
+## Create local branch
+Firstly, create branch locally,
+```
+git branch <branch-new>
+```
+or create and checkout it by
+```
+git checkout -b <branch-new>
+```
+## Create romote branch based on local branch
+```
+git push <remote-name> <branch-new>
+```
+Where \<remote-name\> is typically origin, the name which git gives to the remote you cloned from. Your colleagues would then just pull that branch, and it's automatically created locally.
+
 # Syncing to a fork
 Sync a fork of a repository to keep it up-to-date with the upstream repository.
 
