@@ -14,6 +14,12 @@ git push <remote-name> <branch-new>
 ```
 Where \<remote-name\> is typically origin, the name which git gives to the remote you cloned from. Your colleagues would then just pull that branch, and it's automatically created locally.
 
+## Push
+The current branch build-second-index has no upstream branch.
+To push the current branch and set the remote as upstream, use
+```shell
+git push --set-upstream origin build-second-index
+```
 # Syncing to a fork
 Sync a fork of a repository to keep it up-to-date with the upstream repository.
 
