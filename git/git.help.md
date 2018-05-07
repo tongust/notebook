@@ -143,3 +143,4 @@ Shows all the changes between the working directory and *HEAD* (which includes c
 # git pull vs git pull --rebase (not conflic)
 modifyed by current branch
 modifyed again
+modifyed again
