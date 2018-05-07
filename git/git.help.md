@@ -138,7 +138,7 @@ Shows the changes between the index and the *HEAD* (which is the last commit on 
 ## git diff *HEAD*
 Shows all the changes between the working directory and *HEAD* (which includes changes in the index). This shows all the changes since the last commit, whether or not they have been staged for commit or not.
 
-# Manage branchs (not conflic, no, no)
+# Manage branchs (not conflic, no, no, no)
 
 # git pull vs git pull --rebase (not conflic)
 modifyed by current branch
