@@ -140,10 +140,8 @@ Shows all the changes between the working directory and *HEAD* (which includes c
 # Your current work stage is not clean and falls behind origin/master by some commits
 Two choices:
 - git stash then git pull to update, and git stash show it.
-- git commit it then merge to origin/master
-Then go to below sections.
+- git commit it then merge to origin/master then go to below sections.
 # If you have committed and get rejected when git push
-## No conflicts
 Remote:
 
 > --> node0 --> node1 (Head)
@@ -152,14 +150,17 @@ Local:
 
 > --> node0 --> new_commit (Head)
 
+## No conflicts
 ### Method 1 -- Have a merge commit with git pull
 > git pull
+
 > git push
 
 Result:
 > --> node0 --> node1 --> new_commit --> merge_commit (head)
 ### Method 2 -- Without a merge commit with git pull --rebase
 > git pull --rebase
+
 > git push
 
 Result:
@@ -171,8 +172,11 @@ Result:
 
 ### Method 1 -- git pull
 > git pull
+
 > fix conflicts
+
 > git add "both modified files" then git commit -m "conflict merge"
+
 > git push
 
 Result:
