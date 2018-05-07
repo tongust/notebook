@@ -144,4 +144,4 @@ Shows all the changes between the working directory and *HEAD* (which includes c
 modifyed by current branch
 modifyed again 2
 modifyed again
-modified again by left-left-right-right-left-left-left
+modified again by left-left-right-right-left-left-left-left
