@@ -1,5 +1,0 @@
-\contentsline {section}{\numberline {1}Ex. 7.3 }{1}{section.1}
-\contentsline {subparagraph}{(a)}{1}{section*.2}
-\contentsline {subparagraph}{(b)}{1}{section*.3}
-\contentsline {subparagraph}{(c)}{1}{section*.4}
-\contentsline {paragraph}{\textbf {Proof:}}{1}{section*.5}
