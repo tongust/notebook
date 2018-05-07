@@ -141,3 +141,4 @@ Shows all the changes between the working directory and *HEAD* (which includes c
 # Manage branchs
 
 # git pull vs git pull --rebase
+modifyed by current branch
