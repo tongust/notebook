@@ -137,11 +137,54 @@ Shows the changes between the index and the *HEAD* (which is the last commit on 
 
 ## git diff *HEAD*
 Shows all the changes between the working directory and *HEAD* (which includes changes in the index). This shows all the changes since the last commit, whether or not they have been staged for commit or not.
+# Your current work stage is not clean and falls behind origin/master by some commits
+Two choices:
+- git stash then git pull to update, and git stash show it.
+- git commit it then merge to origin/master
+Then go to below sections.
+# If you have committed and get rejected when git push
+## No conflicts
+Remote:
 
-# Manage branchs (not conflic, no, no, no)
+> --> node0 --> node1 (Head)
 
-# git pull vs git pull --rebase (not conflic)
-modifyed by current branch
-modifyed again 2
-modifyed again
-modified again by left-left-right-right-left-left-left-right
+Local:
+
+> --> node0 --> new_commit (Head)
+
+### Method 1 -- Have a merge commit with git pull
+> git pull
+> git push
+
+Result:
+> --> node0 --> node1 --> new_commit --> merge_commit (head)
+### Method 2 -- Without a merge commit with git pull --rebase
+> git pull --rebase
+> git push
+
+Result:
+> --> node0 --> node1 --> new_commit (head)
+
+## Conflicts
+"git push" and get 
+> ! [rejected]        master -> master (fetch first)
+
+### Method 1 -- git pull
+> git pull
+> fix conflicts
+> git add "both modified files" then git commit -m "conflict merge"
+> git push
+
+Result:
+> --> node0 --> node1 --> new_commit --> conflict_merge (head)
+
+## Method 2 -- git pull --rebase
+```
+git pull --rebase
+fix conflicts
+git add "both modified files" and **DO NOT COMMIT!**
+git rebase --continue
+git push 
+```
+Result:
+> --> node0 --> node1 --> new_commit (head)
