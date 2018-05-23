@@ -192,3 +192,45 @@ git push
 ```
 Result:
 > --> node0 --> node1 --> new_commit (head)
+
+# Transfer repoistory
+Scenario: you have a repository host on your own server, and you want to put it on Github.
+We name the local repository local::A, and the one on hub Github::A. Now their relationship should be clear.
+The local::A will be **upstream**, while the Github::A will be **origin**.
+## What is the difference between origin and upstream
+> upstream generally refers to the original/raw repo that you have forked.
+> origin is your fork that you own repo, clone of the original/raw repo.
+## Steps to transfer
+### 1. Create a new repository on Github.
+To avoid errors, DO NOT initialize the new repository with README, license, or .gitignore files. Add them later as you will.
+### 2. Git clone your local repository
+```
+git clone git@Local_A.git ./A
+```
+### 3. Get the URL for the remote repository from Github
+At the top of your new repository's Quick Setup page, copy the remote repository URL.
+### 5. Add the URL for the remote repository where your local repository will be pushed
+```
+# rename the origin upstream
+# the upstream should be local host server
+git remote rename origin upstream
+# Add origin URL
+git remote add origin URL_TO_GITHUB_REPO
+# First push
+git push origin master
+```
+
+## The origin and upstream
+![origin and upsteam](./figures/origin-upstream.png)
+```
+git remote -v
+# origin git@github.com:XXX/A.git (fetch)
+# origin git@github.com:XXX/A.git (push)
+# upstream git@Local:XXX/A.git (fetch)
+# upstream git@Local:XXX/A.git (push)
+```
+To pull in patches form upstream (your repository host on local server), simply run
+```
+git pull upstream master
+git push origin master
+```
